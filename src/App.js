@@ -2,8 +2,10 @@
 import React, {useEffect} from "react";
 import TodoList from "./Todo/TodoList";
 import context from "./context";
-import AddTodo from "./Todo/AddTodo";
 import Loader from "./Loader";
+import Modal from "./Todo/Modal/Modal";
+
+const AddTodo =React.lazy(()=> import('./Todo/AddTodo'))
 
 function App() {
   const [todos,setTodos] = React.useState([])
@@ -43,10 +45,14 @@ function toggleTodo(id) {
     <context.Provider value={{removeTodo}}>
       <div className="wrapper">
         <h1>React first</h1>
-        <AddTodo onCreate={addTodo}/>
+        <Modal/> 
+        <React.Suspense fallback={<p>Loading</p>}>
+            <AddTodo onCreate={addTodo}/>
+        </React.Suspense>
+       
        { loading?<Loader />:""}
       {
-        todos.length? <TodoList todos={todos} onTogle={toggleTodo}/>:(loading?"<p>Нет задач</p>":"")
+        todos.length? <TodoList todos={todos} onTogle={toggleTodo}/>:(loading?null:<p>Нет задач</p>)
         
         
       }
